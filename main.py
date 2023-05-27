@@ -4,7 +4,7 @@ import time
 
 #기본 세팅
 WHITE = (255,255,255)
-CELL_SIZE = 30
+CELL_SIZE = 30 
 CELL_COLOR = WHITE
 grid = 0 #게임판 저장
 ROW,COLUMN,MINE_COUNT = (0,0,0) 
@@ -39,7 +39,7 @@ def set_board(level):
     #칸이 지뢰인지, 열린칸인지, 칸의 숫자는 뭔지, 깃발을 새웠는지} grid에 2차원배열로 저장
     #0은 빈칸, 1~8은 주변 지뢰의 숫자, 9는 지뢰
     grid = [[{'type': 0, 'open': False, 'flag' : False, 'Mouse_on' : False} for _ in range(ROW)] for _ in range(COLUMN)]
-    SCREEN_SIZE = (COLUMN*30, ROW*30)
+    SCREEN_SIZE = (COLUMN*CELL_SIZE, ROW*CELL_SIZE)
     lv = ["EASY","NORMAL","HARD"]
     pygame.init()
     pygame.display.set_caption("Minesweeper - "+lv[level-1])
@@ -86,8 +86,9 @@ def set_mines(event):
 #게임판 클릭 반응
 def click_event(event):
     global click_cnt
-    if click_cnt == 0 : set_mines(event)
-    click_cnt+=1
+    if click_cnt == 0 : 
+        set_mines(event)
+        click_cnt+=1
     y,x = (event.pos[0] // CELL_SIZE, event.pos[1] //CELL_SIZE)
     if not OOB(y,x): return #범위 밖
     tile = grid[y][x]
@@ -109,7 +110,7 @@ def click_event(event):
                     open_tile(cury,curx)
             else : return
 
-        if check_gameover() : return
+        check_gameover()
         
     elif event.button == 3 : #우클릭 / 깃발설치
         if tile['open']: return #열린칸은 깃발설치 X
@@ -124,13 +125,11 @@ def check_gameover():
 
             if tile['type']==9 and tile['open']==True: #지뢰칸이 열렸을때
                 print_end_screen(0)
-                return 1
             if tile['type']!=9 and tile['open']==True: #지뢰가 아닌 칸 개수 카운트
                 cnt_open+=1
 
-    if cnt_open == COLUMN*ROW - MINE_COUNT:
+    if cnt_open == COLUMN*ROW - MINE_COUNT: #모든 칸을 열었을 때
         print_end_screen(1)
-        return 1
 #게임판 출력
 def print_board():
     BLACK = (0,0,0) #닫힌칸
@@ -145,8 +144,8 @@ def print_board():
                     pygame.draw.rect(screen, GRAY, pygame.Rect(i*CELL_SIZE,j*CELL_SIZE,CELL_SIZE,CELL_SIZE))
 
                 if tile['type']!=0 and tile['type'] != 9 : #숫자칸
-                    mine_count_around_image = pygame.font.SysFont(None, 36).render('{}'.format(tile['type']),True,YELLOW)
-                    screen.blit(mine_count_around_image,mine_count_around_image.get_rect(centerx=i*CELL_SIZE+CELL_SIZE//2, centery=j*CELL_SIZE+CELL_SIZE//2))
+                    number_image = pygame.font.SysFont(None, 36).render('{}'.format(tile['type']),True,YELLOW)
+                    screen.blit(number_image,number_image.get_rect(centerx=i*CELL_SIZE+CELL_SIZE//2, centery=j*CELL_SIZE+CELL_SIZE//2))
                     
                 if tile['type'] == 9 : #지뢰칸
                     mine_image = pygame.font.SysFont(None, 36).render('x',True,RED)
@@ -156,8 +155,8 @@ def print_board():
                     pygame.draw.rect(screen, BLACK, pygame.Rect(i*CELL_SIZE,j*CELL_SIZE,CELL_SIZE,CELL_SIZE))
 
                 if tile['flag']==True: #깃발칸
-                    v_image = pygame.font.SysFont(None, 36).render('v',True,WHITE)
-                    screen.blit(v_image,v_image.get_rect(centerx=i*CELL_SIZE+CELL_SIZE//2, centery=j*CELL_SIZE+CELL_SIZE//2))
+                    flag_image = pygame.font.SysFont(None, 36).render('v',True,WHITE)
+                    screen.blit(flag_image,flag_image.get_rect(centerx=i*CELL_SIZE+CELL_SIZE//2, centery=j*CELL_SIZE+CELL_SIZE//2))
                     
                 #격자 출력
                 pygame.draw.rect(screen, CELL_COLOR, (i*CELL_SIZE, j*CELL_SIZE, CELL_SIZE, CELL_SIZE), 1)
@@ -201,13 +200,12 @@ def print_start_screen():
         start_screen.blit(hard_image,hard_image.get_rect(centerx=X//2, centery=Y//5*4))
         pygame.draw.rect(start_screen, CELL_COLOR, (X//2-X//4, Y//5*4-Y//18, X//2, Y//10), 1)
 
-        pygame.time.Clock().tick(30)
+        pygame.time.Clock().tick(60)
         pygame.display.flip()
 #게임 화면 출력
 def print_game_screen():
     while True:
         for event in pygame.event.get():
-            print_board()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
@@ -215,6 +213,7 @@ def print_game_screen():
                 change_color(event)
             elif event.type == pygame.MOUSEBUTTONDOWN : #클릭
                 click_event(event)
+        print_board()
 #게임 종료 화면 출력 / result가 0이면 패배 1이면 승리
 def print_end_screen(result):
     print_board()
@@ -261,9 +260,7 @@ def change_color(event):
     y, x = event.pos[0] // CELL_SIZE, event.pos[1] // CELL_SIZE
     if(grid[y][x]['open'] or grid[y][x]['flag']): return
 
-    pygame.draw.rect(screen, (25,25,25), pygame.Rect(
-        y*CELL_SIZE,x*CELL_SIZE,CELL_SIZE,CELL_SIZE
-    ))
+    pygame.draw.rect(screen, (25,25,25), pygame.Rect(y*CELL_SIZE,x*CELL_SIZE,CELL_SIZE,CELL_SIZE))
     pygame.display.flip()
 
 #main
