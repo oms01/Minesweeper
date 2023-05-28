@@ -17,9 +17,9 @@ Windows7 기본 게임 중 Minesweeper(지뢰찾기)를 참고하여 파이썬�
 
 숫자칸의 단서들로 모든 지뢰를 찾아 승리를 쟁취해보세요!
 
+## 실행파일 위치
 
-## 🖥 개발 기간
-* 23.05.16 ~ 
+* Minesweeper\dist\main\main.exe
 
 ## 🖥 주요 기능
 

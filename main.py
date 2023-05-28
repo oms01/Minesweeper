@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import sys
 
 #기본 세팅
 WHITE = (255,255,255)
@@ -174,7 +175,7 @@ def print_start_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x,y = (event.pos[0],event.pos[1])
                 # EASY, NORMAL, HARD 클릭
@@ -208,7 +209,7 @@ def print_game_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             elif event.type == pygame.MOUSEMOTION: # 마우스가 올려졌을때
                 change_color(event)
             elif event.type == pygame.MOUSEBUTTONDOWN : #클릭
@@ -231,7 +232,7 @@ def print_end_screen(result):
         for event in pygame.event.get():
             if event.type == pygame.QUIT : 
                 pygame.quit()
-                exit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN : 
                 x,y = event.pos[0],event.pos[1]
                 if X//2-X//4 < x < X//2-X//4 + X//2 and Y//2+Y//27 < y < Y//2+Y//27 + Y//8: #AGAIN 클릭
